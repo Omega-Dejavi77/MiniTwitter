@@ -5,4 +5,7 @@
     <string name="btn_login">LOGIN</string>
     <string name="content_description">Image</string>
     <string name="text_create_account">SIGN UP</string>
+    <string name="text_go_login">LOGIN</string>
+    <string name="btn_signup">SIGN UP</string>
+    <string name="hint_username">Username</string>
 </resources>

@@ -7,24 +7,22 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
-
-    /**Main Activity is the Login Activity**/
+public class SignUpActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_sign_up);
         getSupportActionBar().hide();
 
-        Button btnLogin = findViewById(R.id.buttonLogin);
-        btnLogin.setOnClickListener(v -> {
+        Button btnSignUp = findViewById(R.id.buttonSignUp);
+        btnSignUp.setOnClickListener(v -> {
 
         });
 
-        TextView tvGoSignUp = findViewById(R.id.textViewGoSignUp);
-        tvGoSignUp.setOnClickListener(v -> {
-            Intent intent = new Intent(this, SignUpActivity.class);
+        TextView tvGoLogin = findViewById(R.id.textViewGoLogin);
+        tvGoLogin.setOnClickListener(v -> {
+            Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
         });
