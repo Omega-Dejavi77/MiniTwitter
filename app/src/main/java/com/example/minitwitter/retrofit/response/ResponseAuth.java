@@ -13,6 +13,10 @@ public class ResponseAuth {
     @Expose
     private String username;
 
+    @SerializedName("email")
+    @Expose
+    private String email;
+
     @SerializedName("photoUrl")
     @Expose
     private String photoUrl;
@@ -25,6 +29,8 @@ public class ResponseAuth {
     @Expose
     private boolean active;
 
+    public ResponseAuth() {}
+
     public String getToke() {
         return toke;
     }
@@ -35,6 +41,14 @@ public class ResponseAuth {
 
     public String getUsername() {
         return username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setUsername(String username) {

@@ -10,6 +10,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.minitwitter.R;
+import com.example.minitwitter.common.Constants;
+import com.example.minitwitter.common.SharedPreferencesManager;
 import com.example.minitwitter.retrofit.MiniTwitterClient;
 import com.example.minitwitter.retrofit.MiniTwitterService;
 import com.example.minitwitter.retrofit.request.RequestSignUp;
@@ -86,6 +88,12 @@ public class SignUpActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<ResponseAuth> call, Response<ResponseAuth> response) {
                     if (response.isSuccessful()) {
+                        SharedPreferencesManager.writeStringValue(Constants.PREF_TOKEN, response.body().getToke());
+                        SharedPreferencesManager.writeStringValue(Constants.PREF_USERNAME, response.body().getUsername());
+                        SharedPreferencesManager.writeStringValue(Constants.PREF_EMAIL, response.body().getEmail());
+                        SharedPreferencesManager.writeStringValue(Constants.PREF_PHOTO_URL, response.body().getPhotoUrl());
+                        SharedPreferencesManager.writeStringValue(Constants.PREF_CREATED, response.body().getCreated());
+                        SharedPreferencesManager.writeBooleanValue(Constants.PREF_ACTIVE, response.body().isActive());
                         startActivity(new Intent(SignUpActivity.this, DashboardActivity.class));
                         finish();
                     }

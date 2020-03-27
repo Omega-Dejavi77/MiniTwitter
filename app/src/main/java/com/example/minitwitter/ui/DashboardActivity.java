@@ -1,8 +1,11 @@
 package com.example.minitwitter.ui;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.example.minitwitter.R;
+import com.example.minitwitter.common.Constants;
+import com.example.minitwitter.common.SharedPreferencesManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +29,9 @@ public class DashboardActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
+        String token = SharedPreferencesManager.readStringValue(Constants.PREF_TOKEN);
+        Toast.makeText(this, token, Toast.LENGTH_SHORT).show();
     }
 
 }
