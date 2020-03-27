@@ -7,16 +7,26 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.minitwitter.R;
-import com.example.minitwitter.ui.MainActivity;
+import com.example.minitwitter.retrofit.MiniTwitterClient;
+import com.example.minitwitter.retrofit.MiniTwitterService;
+import com.example.minitwitter.retrofit.request.RequestSignUp;
+import com.example.minitwitter.retrofit.response.ResponseAuth;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    private EditText username, etEmail;
+    private EditText etUsername, etEmail;
     private EditText etPassword;
     private Button btnSignUp;
     private TextView tvGoLogin;
+    private MiniTwitterClient miniTwitterClient;
+    private MiniTwitterService miniTwitterService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,21 +34,70 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
         getSupportActionBar().hide();
 
-        btnSignUp.setOnClickListener(v -> {
+        retrofitInit();
+        findViews();
+        events();
+    }
 
-        });
-
-        tvGoLogin.setOnClickListener(v -> {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        });
+    private void retrofitInit() {
+        miniTwitterClient = MiniTwitterClient.getInstance();
+        miniTwitterService = miniTwitterClient.getMiniTwitterService();
     }
 
     private void findViews() {
+        etUsername = findViewById(R.id.editTextUsername);
         etEmail = findViewById(R.id.editTextEmail);
         etPassword = findViewById(R.id.editTextPassword);
         btnSignUp = findViewById(R.id.buttonSignUp);
         tvGoLogin = findViewById(R.id.textViewGoLogin);
+    }
+    
+    private void events() {
+        btnSignUp.setOnClickListener(v -> signUp());
+
+        tvGoLogin.setOnClickListener(v -> {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+        });
+    }
+
+    private void signUp() {
+        String username = etUsername.getText().toString();
+        String email = etEmail.getText().toString();
+        String password = etPassword.getText().toString();
+        if (username.isEmpty())
+            etUsername.setError(etUsername.getHint() + " is required");
+
+        else if (email.isEmpty())
+            etEmail.setError(etEmail.getHint() + " is required");
+
+        else if (password.isEmpty())
+            etPassword.setError(etPassword.getHint() + " is required");
+
+        else if (password.length() < 4)
+            etPassword.setError(etPassword.getHint() + " minimum 4 characters");
+
+        else {
+            String code = "UDEMYANDROID";
+            RequestSignUp requestSignUp = new RequestSignUp(username, email, password, code);
+            Call<ResponseAuth> call = miniTwitterService.signUp(requestSignUp);
+
+            call.enqueue(new Callback<ResponseAuth>() {
+                @Override
+                public void onResponse(Call<ResponseAuth> call, Response<ResponseAuth> response) {
+                    if (response.isSuccessful()) {
+                        startActivity(new Intent(SignUpActivity.this, DashboardActivity.class));
+                        finish();
+                    }
+                    else
+                        Toast.makeText(SignUpActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(Call<ResponseAuth> call, Throwable t) {
+                    Toast.makeText(SignUpActivity.this, "Conection problems. Please try again", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 }

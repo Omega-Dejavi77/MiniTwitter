@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         retrofitInit();
         findViews();
-        listeners();
+        events();
     }
 
     private void retrofitInit() {
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         tvGoSignUp = findViewById(R.id.textViewGoSignUp);
     }
 
-    private void listeners() {
+    private void events() {
         btnLogin.setOnClickListener(v -> login());
 
         tvGoSignUp.setOnClickListener(v -> {
@@ -77,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<ResponseAuth> call, Response<ResponseAuth> response) {
                     if (response.isSuccessful()) {
-                        Toast.makeText(MainActivity.this, "login successful", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(MainActivity.this, DashboardActivity.class));
                         finish();
                     }
