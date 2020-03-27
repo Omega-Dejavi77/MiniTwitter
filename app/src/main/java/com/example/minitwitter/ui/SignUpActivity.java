@@ -1,13 +1,22 @@
-package com.example.minitwitter;
+package com.example.minitwitter.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.minitwitter.R;
+import com.example.minitwitter.ui.MainActivity;
+
 public class SignUpActivity extends AppCompatActivity {
+
+    private EditText username, etEmail;
+    private EditText etPassword;
+    private Button btnSignUp;
+    private TextView tvGoLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -15,16 +24,21 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
         getSupportActionBar().hide();
 
-        Button btnSignUp = findViewById(R.id.buttonSignUp);
         btnSignUp.setOnClickListener(v -> {
 
         });
 
-        TextView tvGoLogin = findViewById(R.id.textViewGoLogin);
         tvGoLogin.setOnClickListener(v -> {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
         });
+    }
+
+    private void findViews() {
+        etEmail = findViewById(R.id.editTextEmail);
+        etPassword = findViewById(R.id.editTextPassword);
+        btnSignUp = findViewById(R.id.buttonSignUp);
+        tvGoLogin = findViewById(R.id.textViewGoLogin);
     }
 }
