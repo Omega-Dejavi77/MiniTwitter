@@ -12,8 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.minitwitter.dummy.DummyContent;
-import com.example.minitwitter.dummy.DummyContent.DummyItem;
 import com.example.minitwitter.retrofit.response.Tweet;
 
 import java.util.List;

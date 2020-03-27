@@ -1,13 +1,19 @@
 package com.example.minitwitter;
 
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.example.minitwitter.common.Constants;
+import com.example.minitwitter.common.SharedPreferencesManager;
+import com.example.minitwitter.retrofit.response.Like;
 import com.example.minitwitter.retrofit.response.Tweet;
 
 import java.util.List;
@@ -15,12 +21,12 @@ import java.util.List;
 
 public class MyTweetRecyclerViewAdapter extends RecyclerView.Adapter<MyTweetRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Tweet> mValues;
-    private final FragmentActivity mListener;
+    private List<Tweet> mValues;
+    private Context context;
 
-    public MyTweetRecyclerViewAdapter(FragmentActivity activity, List<Tweet> items) {
+    public MyTweetRecyclerViewAdapter(Context context, List<Tweet> items) {
         mValues = items;
-        mListener = activity;
+        this.context = context;
     }
 
     @Override
@@ -33,19 +39,28 @@ public class MyTweetRecyclerViewAdapter extends RecyclerView.Adapter<MyTweetRecy
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.tvUsername.setText(holder.mItem.getUser().getUsername());
+        holder.tvMessage.setText(holder.mItem.getMessage());
+        holder.tvLikesCount.setText(holder.mItem.getLikes().size());
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
-                }
+        String photo = holder.mItem.getUser().getPhotoUrl();
+        if (!photo.equals("")) {
+            Glide.with(context)
+                    .load("https://www.minitwitter.com/apiv1/upload/photos" + photo)
+                    .into(holder.ivAvatar);
+        }
+
+        String currentUser = SharedPreferencesManager.readStringValue(Constants.PREF_USERNAME);
+        for (Like like : holder.mItem.getLikes()) {
+            if (like.getUsername().equals(currentUser)) {
+                Glide.with(context)
+                        .load(R.drawable.ic_like_pink)
+                        .into(holder.ivLike);
+                holder.tvLikesCount.setTextColor(context.getResources().getColor(R.color.colorPink));
+                holder.tvLikesCount.setTypeface(null, Typeface.BOLD);
+                break;
             }
-        });
+        }
     }
 
     @Override
@@ -55,20 +70,26 @@ public class MyTweetRecyclerViewAdapter extends RecyclerView.Adapter<MyTweetRecy
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public DummyItem mItem;
+        public final ImageView ivAvatar;
+        public final ImageView ivLike;
+        public final TextView tvUsername;
+        public final TextView tvMessage;
+        public final TextView tvLikesCount;
+        public Tweet mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.item_number);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            ivAvatar = view.findViewById(R.id.imageViewAvatar);
+            ivLike = view.findViewById(R.id.imageViewLike);
+            tvUsername = view.findViewById(R.id.textViewUsername);
+            tvMessage = view.findViewById(R.id.textViewMessage);
+            tvLikesCount = view.findViewById(R.id.textViewLikes);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + tvUsername.getText() + "'";
         }
     }
 }
