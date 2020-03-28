@@ -41,12 +41,12 @@ public class MyTweetRecyclerViewAdapter extends RecyclerView.Adapter<MyTweetRecy
         holder.mItem = mValues.get(position);
         holder.tvUsername.setText(holder.mItem.getUser().getUsername());
         holder.tvMessage.setText(holder.mItem.getMessage());
-        holder.tvLikesCount.setText(holder.mItem.getLikes().size());
+        holder.tvLikesCount.setText(String.valueOf(holder.mItem.getLikes().size()));
 
         String photo = holder.mItem.getUser().getPhotoUrl();
         if (!photo.equals("")) {
             Glide.with(context)
-                    .load("https://www.minitwitter.com/apiv1/upload/photos" + photo)
+                    .load("https://www.minitwitter.com/apiv1/uploads/photos/" + photo)
                     .into(holder.ivAvatar);
         }
 

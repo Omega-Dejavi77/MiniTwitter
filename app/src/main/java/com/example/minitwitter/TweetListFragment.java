@@ -11,10 +11,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.example.minitwitter.retrofit.AuthTwitterClient;
+import com.example.minitwitter.retrofit.AuthTwitterService;
 import com.example.minitwitter.retrofit.response.Tweet;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class TweetListFragment extends Fragment {
@@ -26,6 +33,8 @@ public class TweetListFragment extends Fragment {
     private RecyclerView recyclerView;
     private MyTweetRecyclerViewAdapter adapter;
     private List<Tweet> tweetList;
+    private AuthTwitterClient authTwitterClient;
+    private AuthTwitterService authTwitterService;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -64,15 +73,39 @@ public class TweetListFragment extends Fragment {
             recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
+            }
+            else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
+            retrofitInit();
+            loadTweetData();
         }
         return view;
     }
 
+    private void retrofitInit() {
+        authTwitterClient = AuthTwitterClient.getInstance();
+        authTwitterService = authTwitterClient.getAuthTwitterService();
+    }
+
     private void loadTweetData() {
-        adapter = new MyTweetRecyclerViewAdapter(getActivity(), tweetList);
-        recyclerView.setAdapter(adapter);
+        Call<List<Tweet>> call = authTwitterService.getAllTweets();
+        call.enqueue(new Callback<List<Tweet>>() {
+            @Override
+            public void onResponse(Call<List<Tweet>> call, Response<List<Tweet>> response) {
+                if (response.isSuccessful()) {
+                    tweetList = response.body();
+                    adapter = new MyTweetRecyclerViewAdapter(getActivity(), tweetList);
+                    recyclerView.setAdapter(adapter);
+                }
+                else
+                    Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<List<Tweet>> call, Throwable t) {
+                Toast.makeText(getActivity(), "Connection error", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

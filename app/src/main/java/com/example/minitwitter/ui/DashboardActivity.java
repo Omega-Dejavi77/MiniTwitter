@@ -6,6 +6,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.minitwitter.R;
+import com.example.minitwitter.TweetListFragment;
 import com.example.minitwitter.common.Constants;
 import com.example.minitwitter.common.SharedPreferencesManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -45,10 +46,13 @@ public class DashboardActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);*/
 
-        BottomNavigationView navigationView = findViewById(R.id.navigation_home);
+        BottomNavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        String token = SharedPreferencesManager.readStringValue(Constants.PREF_TOKEN);
-        Toast.makeText(this, token, Toast.LENGTH_SHORT).show();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragmentContainer, new TweetListFragment())
+                .commit();
     }
 
 }
