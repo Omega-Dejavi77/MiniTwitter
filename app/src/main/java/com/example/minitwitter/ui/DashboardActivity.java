@@ -2,6 +2,7 @@ package com.example.minitwitter.ui;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -10,6 +11,7 @@ import com.example.minitwitter.TweetListFragment;
 import com.example.minitwitter.common.Constants;
 import com.example.minitwitter.common.SharedPreferencesManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -19,6 +21,7 @@ import androidx.navigation.ui.NavigationUI;
 
 public class DashboardActivity extends AppCompatActivity {
 
+    FloatingActionButton fab;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = item -> {
         switch (item.getItemId()) {
@@ -34,7 +37,11 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
+        fab = findViewById(R.id.fab);
+
         getSupportActionBar().hide();
+
 
         /*BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -53,6 +60,11 @@ public class DashboardActivity extends AppCompatActivity {
                 .beginTransaction()
                 .add(R.id.fragmentContainer, new TweetListFragment())
                 .commit();
+
+        fab.setOnClickListener(v -> {
+            NewTweetDialogFragment dialogFragment = new NewTweetDialogFragment();
+            dialogFragment.show(getSupportFragmentManager(), "NewTweetDialogFragment");
+        });
     }
 
 }
