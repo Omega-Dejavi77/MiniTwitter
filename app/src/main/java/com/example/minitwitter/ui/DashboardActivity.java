@@ -12,6 +12,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 
 public class DashboardActivity extends AppCompatActivity {
@@ -20,11 +21,25 @@ public class DashboardActivity extends AppCompatActivity {
     private ImageView ivAvatar;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = item -> {
+
+        Fragment fragment = null;
+
         switch (item.getItemId()) {
             case R.id.navigation_home:
+                fragment = TweetListFragment.newInstance(Constants.TWEET_LIST_ALL);
+                break;
             case R.id.navigation_tweets_like:
+                fragment = TweetListFragment.newInstance(Constants.TWEET_LIST_LIKE);
+                break;
             case R.id.navigation_profile:
-                return true;
+                break;
+        }
+        if (fragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentContainer, fragment)
+                    .commit();
+            return true;
         }
         return false;
     };
@@ -55,7 +70,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.fragmentContainer, new TweetListFragment())
+                .add(R.id.fragmentContainer, TweetListFragment.newInstance(Constants.TWEET_LIST_ALL))
                 .commit();
 
         fab.setOnClickListener(v -> {
