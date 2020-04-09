@@ -3,6 +3,7 @@ package com.example.minitwitter.common;
 public class Constants {
 
     public static final String API_MINITWITTER_BASE_URL ="https://www.minitwitter.com:3001/apiv1/";
+    public static final String API_FILES_URL ="https://www.minitwitter.com/apiv1/uploads/photos";
 
     //PREFERENCES
     public static final String PREF_TOKEN = "PREF_TOKEN";

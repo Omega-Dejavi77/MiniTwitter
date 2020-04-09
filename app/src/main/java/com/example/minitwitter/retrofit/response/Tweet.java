@@ -19,6 +19,15 @@ public class Tweet {
     @Expose
     private User user;
 
+    public Tweet() {}
+
+    public Tweet(Tweet tweet) {
+        this.id = tweet.getId();
+        this.message = tweet.getMessage();
+        this.likes = tweet.getLikes();
+        this.user = tweet.getUser();
+    }
+
     public Integer getId() {
         return id;
     }

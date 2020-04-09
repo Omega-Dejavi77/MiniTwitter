@@ -43,11 +43,11 @@
                         android:textColor="@android:color/black"
                         android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/imageViewToolBarPhoto"
-                        app:layout_constraintTop_toTopOf="@+id/imageViewToolBarPhoto" />
+                        app:layout_constraintStart_toEndOf="@id/imageViewToolBarAvatar"
+                        app:layout_constraintTop_toTopOf="@+id/imageViewToolBarAvatar" />
 
                     <ImageView
-                        android:id="@+id/imageViewToolBarPhoto"
+                        android:id="@+id/imageViewToolBarAvatar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:layout_constraintStart_toStartOf="parent"

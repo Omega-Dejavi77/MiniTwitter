@@ -1,11 +1,9 @@
 package com.example.minitwitter.ui;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.minitwitter.R;
 import com.example.minitwitter.TweetListFragment;
 import com.example.minitwitter.common.Constants;
@@ -14,14 +12,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
+
 
 public class DashboardActivity extends AppCompatActivity {
 
-    FloatingActionButton fab;
+    private FloatingActionButton fab;
+    private ImageView ivAvatar;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = item -> {
         switch (item.getItemId()) {
@@ -39,6 +35,7 @@ public class DashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dashboard);
 
         fab = findViewById(R.id.fab);
+        ivAvatar = findViewById(R.id.imageViewToolBarAvatar);
 
         getSupportActionBar().hide();
 
@@ -65,6 +62,11 @@ public class DashboardActivity extends AppCompatActivity {
             NewTweetDialogFragment dialogFragment = new NewTweetDialogFragment();
             dialogFragment.show(getSupportFragmentManager(), "NewTweetDialogFragment");
         });
+
+        String photoUrl = SharedPreferencesManager.readStringValue(Constants.PREF_PHOTO_URL);
+        if (!photoUrl.isEmpty())
+            Glide.with(this).load(Constants.PREF_PHOTO_URL + photoUrl).into(ivAvatar);
+
     }
 
 }
