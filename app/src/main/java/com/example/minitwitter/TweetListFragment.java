@@ -6,7 +6,6 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -86,7 +85,7 @@ public class TweetListFragment extends Fragment {
     }
 
     private void loadTweetData() {
-        tweetViewModel.getAllTweets().observe(getActivity(), tweets -> {
+        tweetViewModel.getTweets().observe(getActivity(), tweets -> {
             tweetList = tweets;
             adapter.setData(tweetList);
         });
@@ -106,8 +105,22 @@ public class TweetListFragment extends Fragment {
     }
 
     private void loadLikeTweetData() {
+        tweetViewModel.getLikedTweets().observe(getActivity(), likedTweets -> {
+            tweetList = likedTweets;
+            adapter.setData(tweetList);
+        });
     }
 
     private void loadNewLikeTweetData(SwipeRefreshLayout swipeRefreshLayout) {
+        swipeRefreshLayout.setRefreshing(true);
+        tweetViewModel.getNewLikedTweets().observe(getActivity(), new Observer<List<Tweet>>() {
+            @Override
+            public void onChanged(List<Tweet> likedTweets) {
+                tweetList = likedTweets;
+                swipeRefreshLayout.setRefreshing(false);
+                adapter.setData(tweetList);
+                tweetViewModel.getNewLikedTweets().removeObserver(this);
+            }
+        });
     }
 }

@@ -5,9 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
-import com.example.minitwitter.retrofit.request.RequestCreateTweet;
 import com.example.minitwitter.retrofit.response.Tweet;
 
 import java.util.List;
@@ -23,13 +21,22 @@ public class TweetViewModel extends AndroidViewModel {
         tweets = repository.getAllTweets();
     }
 
-    public LiveData<List<Tweet>> getAllTweets() {
+    public LiveData<List<Tweet>> getTweets() {
         return tweets;
+    }
+
+    public LiveData<List<Tweet>> getLikedTweets() {
+        return repository.getLikedTweets();
     }
 
     public LiveData<List<Tweet>> getNewTweets() {
         tweets = repository.getAllTweets();
         return tweets;
+    }
+
+    public LiveData<List<Tweet>> getNewLikedTweets() {
+        getNewTweets();
+        return getLikedTweets();
     }
 
     public void createTweet(String message) {

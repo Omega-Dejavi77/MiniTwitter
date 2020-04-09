@@ -6,14 +6,18 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.minitwitter.MyTweetRecyclerViewAdapter;
+import com.example.minitwitter.common.Constants;
 import com.example.minitwitter.common.MyApp;
+import com.example.minitwitter.common.SharedPreferencesManager;
 import com.example.minitwitter.retrofit.AuthTwitterClient;
 import com.example.minitwitter.retrofit.AuthTwitterService;
 import com.example.minitwitter.retrofit.request.RequestCreateTweet;
+import com.example.minitwitter.retrofit.response.Like;
 import com.example.minitwitter.retrofit.response.Tweet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -24,11 +28,14 @@ public class TweetRepository {
     private AuthTwitterService authTwitterService;
     private AuthTwitterClient authTwitterClient;
     private MutableLiveData<List<Tweet>> allTweets;
+    private MutableLiveData<List<Tweet>> likedTweets;
+    private String username;
 
     public TweetRepository() {
         authTwitterClient = AuthTwitterClient.getInstance();
         authTwitterService = authTwitterClient.getAuthTwitterService();
         allTweets = getAllTweets();
+        username = SharedPreferencesManager.readStringValue(Constants.PREF_USERNAME);
     }
 
     public MutableLiveData<List<Tweet>> getAllTweets() {
@@ -69,10 +76,7 @@ public class TweetRepository {
                             clone.add(new Tweet(tweet));
                         }
                         allTweets.setValue(clone);
-                    }
-                    catch (NullPointerException npe) {
-
-                    }
+                    } catch (NullPointerException npe) { }
                 }
                 else
                     Toast.makeText(MyApp.getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
@@ -90,19 +94,48 @@ public class TweetRepository {
         call.enqueue(new Callback<Tweet>() {
             @Override
             public void onResponse(Call<Tweet> call, Response<Tweet> response) {
-                List<Tweet> clone = new ArrayList<>();
-                for (Tweet tweet : allTweets.getValue()) {
-                    if (tweet.getId() == id)
-                        clone.add(response.body());
-                    else
-                        clone.add(new Tweet(tweet));
+                if (response.isSuccessful()) {
+                    List<Tweet> clone = new ArrayList<>();
+                    for (Tweet tweet : allTweets.getValue()) {
+                        if (tweet.getId() == id)
+                            clone.add(response.body());
+                        else
+                            clone.add(new Tweet(tweet));
+                    }
+                    allTweets.setValue(clone);
+                    getLikedTweets();
                 }
+                else
+                    Toast.makeText(MyApp.getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailure(Call<Tweet> call, Throwable t) {
-
+                Toast.makeText(MyApp.getContext(), "Connection error", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public MutableLiveData<List<Tweet>> getLikedTweets() {
+        if (likedTweets == null)
+            likedTweets = new MutableLiveData<>();
+
+        List<Tweet> newLikedTweets = new ArrayList<>();
+        try {
+            for(Tweet tweet : allTweets.getValue()) {
+                boolean found = false;
+                int i = 0;
+                while (!found && i < tweet.getLikes().size()) {
+                    Like like = tweet.getLikes().get(i);
+                    if (like.getUsername().equals(username)) {
+                        newLikedTweets.add(tweet);
+                        found = true;
+                    }
+                    i++;
+                }
+            }
+        } catch (NullPointerException npm) {}
+        likedTweets.setValue(newLikedTweets);
+        return likedTweets;
     }
 }
