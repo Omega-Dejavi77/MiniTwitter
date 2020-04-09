@@ -7,8 +7,10 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface AuthTwitterService {
 
@@ -17,4 +19,7 @@ public interface AuthTwitterService {
 
     @POST("tweets/create")
     Call<Tweet> createTweet(@Body RequestCreateTweet requestCreateTweet);
+
+    @POST("tweets/like/{id}")
+    Call<Tweet> likeTweet(@Path("id") int id);
 }

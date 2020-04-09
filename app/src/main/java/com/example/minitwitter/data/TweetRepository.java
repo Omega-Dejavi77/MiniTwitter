@@ -84,4 +84,25 @@ public class TweetRepository {
             }
         });
     }
+
+    public void likeTweet(int id) {
+        Call<Tweet> call = authTwitterService.likeTweet(id);
+        call.enqueue(new Callback<Tweet>() {
+            @Override
+            public void onResponse(Call<Tweet> call, Response<Tweet> response) {
+                List<Tweet> clone = new ArrayList<>();
+                for (Tweet tweet : allTweets.getValue()) {
+                    if (tweet.getId() == id)
+                        clone.add(response.body());
+                    else
+                        clone.add(new Tweet(tweet));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Tweet> call, Throwable t) {
+
+            }
+        });
+    }
 }
