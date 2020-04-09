@@ -14,7 +14,7 @@ import java.util.List;
 
 public class TweetViewModel extends AndroidViewModel {
 
-    private final LiveData<List<Tweet>> tweets;
+    private LiveData<List<Tweet>> tweets;
     private TweetRepository repository;
 
     public TweetViewModel(@NonNull Application application) {
@@ -24,6 +24,11 @@ public class TweetViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Tweet>> getAllTweets() {
+        return tweets;
+    }
+
+    public LiveData<List<Tweet>> getNewTweets() {
+        tweets = repository.getAllTweets();
         return tweets;
     }
 
