@@ -29,10 +29,12 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="@android:color/white"
                 app:popupTheme="@style/AppTheme.PopupOverlay">
-                
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp">
 
                     <TextView
                         android:id="@+id/textViewToolBar"
@@ -46,13 +48,13 @@
                         app:layout_constraintStart_toEndOf="@id/imageViewToolBarAvatar"
                         app:layout_constraintTop_toTopOf="@+id/imageViewToolBarAvatar" />
 
-                    <ImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/imageViewToolBarAvatar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_account_circle_gray_24dp" />
+                        tools:src="@drawable/ic_account_circle_gray_24dp" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.appcompat.widget.Toolbar>
 
@@ -82,6 +84,7 @@
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/nav_view"
+            app:labelVisibilityMode="unlabeled"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="0dp"

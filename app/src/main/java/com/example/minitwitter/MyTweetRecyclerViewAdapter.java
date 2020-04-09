@@ -41,16 +41,23 @@ public class MyTweetRecyclerViewAdapter extends RecyclerView.Adapter<MyTweetRecy
         if (mValues == null) return;
 
         holder.mItem = mValues.get(position);
-        holder.tvUsername.setText(holder.mItem.getUser().getUsername());
+        holder.tvUsername.setText(String.format("@%s", holder.mItem.getUser().getUsername()));
         holder.tvMessage.setText(holder.mItem.getMessage());
         holder.tvLikesCount.setText(String.valueOf(holder.mItem.getLikes().size()));
 
         String photo = holder.mItem.getUser().getPhotoUrl();
         if (!photo.equals("")) {
             Glide.with(context)
-                    .load("https://www.minitwitter.com/apiv1/uploads/photos/" + photo)
+                    .load(Constants.API_FILES_URL + photo)
                     .into(holder.ivAvatar);
         }
+
+        //Reset the like icons to fix rapid scroll view
+        Glide.with(context)
+                .load(R.drawable.ic_like)
+                .into(holder.ivLike);
+        holder.tvLikesCount.setTextColor(context.getResources().getColor(android.R.color.black));
+        holder.tvLikesCount.setTypeface(null, Typeface.NORMAL);
 
         String currentUser = SharedPreferencesManager.readStringValue(Constants.PREF_USERNAME);
         for (Like like : holder.mItem.getLikes()) {
