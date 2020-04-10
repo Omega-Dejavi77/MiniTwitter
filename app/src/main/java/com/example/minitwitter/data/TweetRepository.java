@@ -2,10 +2,8 @@ package com.example.minitwitter.data;
 
 import android.widget.Toast;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.minitwitter.MyTweetRecyclerViewAdapter;
 import com.example.minitwitter.common.Constants;
 import com.example.minitwitter.common.MyApp;
 import com.example.minitwitter.common.SharedPreferencesManager;
@@ -18,7 +16,6 @@ import com.example.minitwitter.retrofit.response.TweetDeleted;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 import retrofit2.Call;
 import retrofit2.Callback;

@@ -1,19 +1,17 @@
 package com.example.minitwitter.ui;
 
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.example.minitwitter.R;
-import com.example.minitwitter.TweetListFragment;
+import com.example.minitwitter.ui.tweets.TweetListFragment;
 import com.example.minitwitter.common.Constants;
 import com.example.minitwitter.common.SharedPreferencesManager;
+import com.example.minitwitter.ui.tweets.NewTweetDialogFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.internal.NavigationMenuItemView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 

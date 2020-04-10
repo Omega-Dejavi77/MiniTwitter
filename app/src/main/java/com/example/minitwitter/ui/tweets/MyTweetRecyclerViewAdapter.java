@@ -1,8 +1,7 @@
-package com.example.minitwitter;
+package com.example.minitwitter.ui.tweets;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
@@ -14,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.minitwitter.R;
 import com.example.minitwitter.common.Constants;
 import com.example.minitwitter.common.SharedPreferencesManager;
 import com.example.minitwitter.data.TweetViewModel;

@@ -1,4 +1,4 @@
-package com.example.minitwitter.ui;
+package com.example.minitwitter.ui.auth;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,26 +14,28 @@ import com.example.minitwitter.common.Constants;
 import com.example.minitwitter.common.SharedPreferencesManager;
 import com.example.minitwitter.retrofit.MiniTwitterClient;
 import com.example.minitwitter.retrofit.MiniTwitterService;
-import com.example.minitwitter.retrofit.request.RequestSignUp;
+import com.example.minitwitter.retrofit.request.RequestLogin;
 import com.example.minitwitter.retrofit.response.ResponseAuth;
+import com.example.minitwitter.ui.DashboardActivity;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SignUpActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
-    private EditText etUsername, etEmail;
-    private EditText etPassword;
-    private Button btnSignUp;
-    private TextView tvGoLogin;
+    /**Main Activity is the Login Activity**/
+    private EditText etEmail, etPassword;
+    private Button btnLogin;
+    private TextView tvGoSignUp;
+
     private MiniTwitterClient miniTwitterClient;
     private MiniTwitterService miniTwitterService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up);
+        setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
         retrofitInit();
@@ -47,43 +49,33 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void findViews() {
-        etUsername = findViewById(R.id.editTextUsername);
         etEmail = findViewById(R.id.editTextEmail);
         etPassword = findViewById(R.id.editTextPassword);
-        btnSignUp = findViewById(R.id.buttonSignUp);
-        tvGoLogin = findViewById(R.id.textViewGoLogin);
+        btnLogin = findViewById(R.id.buttonLogin);
+        tvGoSignUp = findViewById(R.id.textViewGoSignUp);
     }
-    
-    private void events() {
-        btnSignUp.setOnClickListener(v -> signUp());
 
-        tvGoLogin.setOnClickListener(v -> {
-            startActivity(new Intent(this, MainActivity.class));
+    private void events() {
+        btnLogin.setOnClickListener(v -> login());
+
+        tvGoSignUp.setOnClickListener(v -> {
+            startActivity(new Intent(this, SignUpActivity.class));
             finish();
         });
     }
 
-    private void signUp() {
-        String username = etUsername.getText().toString();
+    private void login() {
         String email = etEmail.getText().toString();
         String password = etPassword.getText().toString();
-        if (username.isEmpty())
-            etUsername.setError(etUsername.getHint() + " is required");
-
-        else if (email.isEmpty())
-            etEmail.setError(etEmail.getHint() + " is required");
+        if (email.isEmpty())
+            etEmail.setError("Email is required");
 
         else if (password.isEmpty())
-            etPassword.setError(etPassword.getHint() + " is required");
-
-        else if (password.length() < 4)
-            etPassword.setError(etPassword.getHint() + " minimum 4 characters");
+            etPassword.setError("Password is required");
 
         else {
-            String code = "UDEMYANDROID";
-            RequestSignUp requestSignUp = new RequestSignUp(username, email, password, code);
-            Call<ResponseAuth> call = miniTwitterService.signUp(requestSignUp);
-
+            RequestLogin requestLogin = new RequestLogin(email, password);
+            Call<ResponseAuth> call = miniTwitterService.login(requestLogin);
             call.enqueue(new Callback<ResponseAuth>() {
                 @Override
                 public void onResponse(Call<ResponseAuth> call, Response<ResponseAuth> response) {
@@ -94,16 +86,16 @@ public class SignUpActivity extends AppCompatActivity {
                         SharedPreferencesManager.writeStringValue(Constants.PREF_PHOTO_URL, response.body().getPhotoUrl());
                         SharedPreferencesManager.writeStringValue(Constants.PREF_CREATED, response.body().getCreated());
                         SharedPreferencesManager.writeBooleanValue(Constants.PREF_ACTIVE, response.body().isActive());
-                        startActivity(new Intent(SignUpActivity.this, DashboardActivity.class));
+                        startActivity(new Intent(MainActivity.this, DashboardActivity.class));
                         finish();
                     }
                     else
-                        Toast.makeText(SignUpActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onFailure(Call<ResponseAuth> call, Throwable t) {
-                    Toast.makeText(SignUpActivity.this, "Conection problems. Please try again", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Conection problems. Please try again", Toast.LENGTH_SHORT).show();
                 }
             });
         }

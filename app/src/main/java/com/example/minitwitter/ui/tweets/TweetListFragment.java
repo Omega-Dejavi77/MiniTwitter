@@ -1,4 +1,4 @@
-package com.example.minitwitter;
+package com.example.minitwitter.ui.tweets;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.minitwitter.R;
 import com.example.minitwitter.common.Constants;
 import com.example.minitwitter.data.TweetViewModel;
 
