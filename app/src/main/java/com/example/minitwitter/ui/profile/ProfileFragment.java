@@ -1,7 +1,7 @@
 package com.example.minitwitter.ui.profile;
 
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
 
@@ -16,18 +16,27 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.minitwitter.R;
+import com.example.minitwitter.common.Constants;
 import com.example.minitwitter.data.ProfileViewModel;
+import com.example.minitwitter.retrofit.response.ResponseUserProfile;
 
 public class ProfileFragment extends Fragment {
 
-    private ProfileViewModel mViewModel;
+    private ProfileViewModel profileViewModel;
     private ImageView ivAvatar;
-    private EditText etUsername, etEmail, etPassword;
+    private EditText etUsername, etEmail, etPassword, etWebsite, etDescription;
     private Button btnSave, btnChangePassword;
 
     public static ProfileFragment newInstance() {
         return new ProfileFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
     }
 
     @Override
@@ -38,16 +47,22 @@ public class ProfileFragment extends Fragment {
         etUsername = view.findViewById(R.id.editTextUsername);
         etEmail = view.findViewById(R.id.editTextEmail);
         etPassword = view.findViewById(R.id.editTextPassword);
+        etWebsite = view.findViewById(R.id.editTextUserWebsite);
+        etDescription = view.findViewById(R.id.editTextUserDescription);
         btnSave = view.findViewById(R.id.buttonSave);
         btnChangePassword = view.findViewById(R.id.buttonChangePassword);
+
+        profileViewModel.getResponseUserProfileLiveData().observe(getActivity(), responseUserProfile -> {
+            etUsername.setText(responseUserProfile.getUsername());
+            etEmail.setText(responseUserProfile.getEmail());
+            etWebsite.setText(responseUserProfile.getWebsite());
+            etDescription.setText(responseUserProfile.getDescription());
+            if (!responseUserProfile.getPhotoUrl().isEmpty()) {
+                Glide.with(getActivity())
+                        .load(Constants.API_FILES_URL + responseUserProfile.getPhotoUrl())
+                        .into(ivAvatar);
+            }
+        });
         return view;
     }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
-        // TODO: Use the ViewModel
-    }
-
 }

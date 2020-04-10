@@ -1,6 +1,9 @@
 package com.example.minitwitter.retrofit;
 
 import com.example.minitwitter.retrofit.request.RequestCreateTweet;
+import com.example.minitwitter.retrofit.request.RequestUserProfile;
+import com.example.minitwitter.retrofit.response.ResponseAuth;
+import com.example.minitwitter.retrofit.response.ResponseUserProfile;
 import com.example.minitwitter.retrofit.response.Tweet;
 import com.example.minitwitter.retrofit.response.TweetDeleted;
 
@@ -12,6 +15,7 @@ import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface AuthTwitterService {
@@ -27,4 +31,10 @@ public interface AuthTwitterService {
 
     @DELETE("tweets/{idTweet}")
     Call<TweetDeleted> deleteTweet(@Path("idTweet") int id);
+
+    @GET("users/profile")
+    Call<ResponseUserProfile> getProfile();
+
+    @PUT("users/profile")
+    Call<ResponseUserProfile> updateProfile(@Body RequestUserProfile requestUserProfile);
 }
