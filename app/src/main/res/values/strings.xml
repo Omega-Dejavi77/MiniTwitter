@@ -23,4 +23,6 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="toolbar_title_home">Home</string>
     <string name="hint_new_tweet">What\'s going on?</string>
+    <string name="save">Save</string>
+    <string name="change_password">Change password</string>
 </resources>
