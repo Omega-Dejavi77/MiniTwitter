@@ -15,11 +15,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.minitwitter.R;
 import com.example.minitwitter.common.Constants;
 import com.example.minitwitter.data.ProfileViewModel;
+import com.example.minitwitter.retrofit.request.RequestUserProfile;
 import com.example.minitwitter.retrofit.response.ResponseUserProfile;
 
 public class ProfileFragment extends Fragment {
@@ -28,6 +30,7 @@ public class ProfileFragment extends Fragment {
     private ImageView ivAvatar;
     private EditText etUsername, etEmail, etPassword, etWebsite, etDescription;
     private Button btnSave, btnChangePassword;
+    private boolean isFirstLoad = true;
 
     public static ProfileFragment newInstance() {
         return new ProfileFragment();
@@ -52,11 +55,35 @@ public class ProfileFragment extends Fragment {
         btnSave = view.findViewById(R.id.buttonSave);
         btnChangePassword = view.findViewById(R.id.buttonChangePassword);
 
+        btnSave.setOnClickListener(v -> {
+            String username = etUsername.getText().toString();
+            String email = etEmail.getText().toString();
+            String description = etDescription.getText().toString();
+            String website = etWebsite.getText().toString();
+            String password = etPassword.getText().toString();
+            if (username.isEmpty())
+                etUsername.setError("username cannot be empty");
+            else if (email.isEmpty())
+                etEmail.setError("email cannot be empty");
+            else if (password.isEmpty())
+                etPassword.setError("password cannot be empty");
+            else {
+                profileViewModel.updateProfile(new RequestUserProfile(username, email, description, website, password));
+                Toast.makeText(getActivity(), "Sending info...", Toast.LENGTH_SHORT).show();
+                btnSave.setEnabled(false);
+            }
+        });
+
+
         profileViewModel.getResponseUserProfileLiveData().observe(getActivity(), responseUserProfile -> {
             etUsername.setText(responseUserProfile.getUsername());
             etEmail.setText(responseUserProfile.getEmail());
             etWebsite.setText(responseUserProfile.getWebsite());
             etDescription.setText(responseUserProfile.getDescription());
+            if (!isFirstLoad) {
+                btnSave.setEnabled(true);
+                Toast.makeText(getActivity(), "Info saved.", Toast.LENGTH_SHORT).show();
+            }
             if (!responseUserProfile.getPhotoUrl().isEmpty()) {
                 Glide.with(getActivity())
                         .load(Constants.API_FILES_URL + responseUserProfile.getPhotoUrl())

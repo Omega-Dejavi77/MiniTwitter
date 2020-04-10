@@ -10,6 +10,7 @@ import com.example.minitwitter.common.SharedPreferencesManager;
 import com.example.minitwitter.retrofit.AuthTwitterClient;
 import com.example.minitwitter.retrofit.AuthTwitterService;
 import com.example.minitwitter.retrofit.request.RequestCreateTweet;
+import com.example.minitwitter.retrofit.request.RequestUserProfile;
 import com.example.minitwitter.retrofit.response.Like;
 import com.example.minitwitter.retrofit.response.ResponseUserProfile;
 import com.example.minitwitter.retrofit.response.Tweet;
@@ -53,5 +54,22 @@ public class ProfileRepository {
             }
         });
         return userProfile;
+    }
+
+    public void updateProfile(RequestUserProfile requestUserProfile) {
+        authTwitterService.updateProfile(requestUserProfile).enqueue(new Callback<ResponseUserProfile>() {
+            @Override
+            public void onResponse(Call<ResponseUserProfile> call, Response<ResponseUserProfile> response) {
+                if (response.isSuccessful())
+                    userProfile.setValue(response.body());
+                else
+                    Toast.makeText(MyApp.getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<ResponseUserProfile> call, Throwable t) {
+                Toast.makeText(MyApp.getContext(), "Connection error", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

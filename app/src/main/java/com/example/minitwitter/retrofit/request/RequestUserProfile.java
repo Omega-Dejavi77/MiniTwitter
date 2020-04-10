@@ -20,6 +20,18 @@ public class RequestUserProfile {
     @Expose
     private String website;
 
+    @SerializedName("password")
+    @Expose
+    private String password;
+
+    public RequestUserProfile(String username, String email, String description, String website, String password) {
+        this.username = username;
+        this.email = email;
+        this.description = description;
+        this.website = website;
+        this.password = password;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -50,5 +62,13 @@ public class RequestUserProfile {
 
     public void setWebsite(String website) {
         this.website = website;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
