@@ -46,6 +46,8 @@ public class MyTweetRecyclerViewAdapter extends RecyclerView.Adapter<MyTweetRecy
     public void onBindViewHolder(final ViewHolder holder, int position) {
         if (mValues == null) return;
 
+        String currentUser = SharedPreferencesManager.readStringValue(Constants.PREF_USERNAME);
+
         holder.mItem = mValues.get(position);
         holder.tvUsername.setText(String.format("@%s", holder.mItem.getUser().getUsername()));
         holder.tvMessage.setText(holder.mItem.getMessage());
@@ -67,7 +69,12 @@ public class MyTweetRecyclerViewAdapter extends RecyclerView.Adapter<MyTweetRecy
 
         holder.ivLike.setOnClickListener(v -> tweetViewModel.likeTweet(holder.mItem.getId()));
 
-        String currentUser = SharedPreferencesManager.readStringValue(Constants.PREF_USERNAME);
+        holder.ivShowMenu.setVisibility(View.GONE);
+        if (holder.mItem.getUser().getUsername().equals(currentUser))
+            holder.ivShowMenu.setVisibility(View.VISIBLE);
+        holder.ivShowMenu.setOnClickListener(v -> tweetViewModel.openDialogTweetMenu(context, holder.mItem.getId()));
+
+
         for (Like like : holder.mItem.getLikes()) {
             if (like.getUsername().equals(currentUser)) {
                 Glide.with(context)
@@ -93,7 +100,7 @@ public class MyTweetRecyclerViewAdapter extends RecyclerView.Adapter<MyTweetRecy
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final ImageView ivAvatar;
-        public final ImageView ivLike;
+        public final ImageView ivLike, ivShowMenu;
         public final TextView tvUsername;
         public final TextView tvMessage;
         public final TextView tvLikesCount;
@@ -104,6 +111,7 @@ public class MyTweetRecyclerViewAdapter extends RecyclerView.Adapter<MyTweetRecy
             mView = view;
             ivAvatar = view.findViewById(R.id.imageViewAvatar);
             ivLike = view.findViewById(R.id.imageViewLike);
+            ivShowMenu = view.findViewById(R.id.imageViewShowMenu);
             tvUsername = view.findViewById(R.id.textViewUsername);
             tvMessage = view.findViewById(R.id.textViewMessage);
             tvLikesCount = view.findViewById(R.id.textViewLikes);

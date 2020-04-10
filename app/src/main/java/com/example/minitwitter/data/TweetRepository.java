@@ -14,6 +14,7 @@ import com.example.minitwitter.retrofit.AuthTwitterService;
 import com.example.minitwitter.retrofit.request.RequestCreateTweet;
 import com.example.minitwitter.retrofit.response.Like;
 import com.example.minitwitter.retrofit.response.Tweet;
+import com.example.minitwitter.retrofit.response.TweetDeleted;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,8 +63,7 @@ public class TweetRepository {
 
     public void createTweet(String message) {
         RequestCreateTweet createTweet = new RequestCreateTweet(message);
-        Call<Tweet> call = authTwitterService.createTweet(createTweet);
-        call.enqueue(new Callback<Tweet>() {
+        authTwitterService.createTweet(createTweet).enqueue(new Callback<Tweet>() {
             @Override
             public void onResponse(Call<Tweet> call, Response<Tweet> response) {
                 if (response.isSuccessful()) {
@@ -90,8 +90,7 @@ public class TweetRepository {
     }
 
     public void likeTweet(int id) {
-        Call<Tweet> call = authTwitterService.likeTweet(id);
-        call.enqueue(new Callback<Tweet>() {
+        authTwitterService.likeTweet(id).enqueue(new Callback<Tweet>() {
             @Override
             public void onResponse(Call<Tweet> call, Response<Tweet> response) {
                 if (response.isSuccessful()) {
@@ -134,8 +133,34 @@ public class TweetRepository {
                     i++;
                 }
             }
-        } catch (NullPointerException npm) {}
+        } catch (NullPointerException ignore) {}
         likedTweets.setValue(newLikedTweets);
         return likedTweets;
+    }
+
+    public void deleteTweet(int id) {
+        authTwitterService.deleteTweet(id).enqueue(new Callback<TweetDeleted>() {
+            @Override
+            public void onResponse(Call<TweetDeleted> call, Response<TweetDeleted> response) {
+                if (response.isSuccessful()) {
+                    ArrayList<Tweet> clone = new ArrayList<>();
+                    try {
+                        for (Tweet tweet : allTweets.getValue()) {
+                            if (tweet.getId() != id)
+                                clone.add(new Tweet(tweet));
+                        }
+                        allTweets.setValue(clone);
+                        getLikedTweets();
+                    } catch (NullPointerException ignored) {}
+                }
+                else
+                    Toast.makeText(MyApp.getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<TweetDeleted> call, Throwable t) {
+                Toast.makeText(MyApp.getContext(), "Connection error", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

@@ -1,12 +1,15 @@
 package com.example.minitwitter.data;
 
 import android.app.Application;
+import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.example.minitwitter.retrofit.response.Tweet;
+import com.example.minitwitter.ui.BottomModalTweetFragment;
 
 import java.util.List;
 
@@ -19,6 +22,11 @@ public class TweetViewModel extends AndroidViewModel {
         super(application);
         repository = new TweetRepository();
         tweets = repository.getAllTweets();
+    }
+
+    public void openDialogTweetMenu(Context context, int idTweetToDelete) {
+        BottomModalTweetFragment bottomModalTweetFragment = BottomModalTweetFragment.newInstance(idTweetToDelete);
+        bottomModalTweetFragment.show(((AppCompatActivity)context).getSupportFragmentManager(), "BottomModalTweetFragment");
     }
 
     public LiveData<List<Tweet>> getTweets() {
@@ -45,5 +53,9 @@ public class TweetViewModel extends AndroidViewModel {
 
     public void likeTweet(int id) {
         repository.likeTweet(id);
+    }
+
+    public void deleteTweet(int id) {
+        repository.deleteTweet(id);
     }
 }

@@ -2,11 +2,13 @@ package com.example.minitwitter.retrofit;
 
 import com.example.minitwitter.retrofit.request.RequestCreateTweet;
 import com.example.minitwitter.retrofit.response.Tweet;
+import com.example.minitwitter.retrofit.response.TweetDeleted;
 
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -20,6 +22,9 @@ public interface AuthTwitterService {
     @POST("tweets/create")
     Call<Tweet> createTweet(@Body RequestCreateTweet requestCreateTweet);
 
-    @POST("tweets/like/{id}")
-    Call<Tweet> likeTweet(@Path("id") int id);
+    @POST("tweets/like/{idTweet}")
+    Call<Tweet> likeTweet(@Path("idTweet") int id);
+
+    @DELETE("tweets/{idTweet}")
+    Call<TweetDeleted> deleteTweet(@Path("idTweet") int id);
 }
