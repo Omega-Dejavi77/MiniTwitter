@@ -18,13 +18,15 @@ public class SharedPreferencesManager {
     public static void writeStringValue(String key, String valueData) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
         editor.putString(key, valueData);
-        editor.commit();
+        //editor.commit();
+        editor.apply();
     }
 
     public static void writeBooleanValue(String key, boolean valueData) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
         editor.putBoolean(key, valueData);
-        editor.commit();
+        //editor.commit();
+        editor.apply();
     }
 
     public static String readStringValue(String key) {

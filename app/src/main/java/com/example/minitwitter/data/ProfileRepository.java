@@ -12,13 +12,17 @@ import com.example.minitwitter.retrofit.AuthTwitterService;
 import com.example.minitwitter.retrofit.request.RequestCreateTweet;
 import com.example.minitwitter.retrofit.request.RequestUserProfile;
 import com.example.minitwitter.retrofit.response.Like;
+import com.example.minitwitter.retrofit.response.ResponseUploadProfilePhoto;
 import com.example.minitwitter.retrofit.response.ResponseUserProfile;
 import com.example.minitwitter.retrofit.response.Tweet;
 import com.example.minitwitter.retrofit.response.TweetDeleted;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -28,11 +32,18 @@ public class ProfileRepository {
     private AuthTwitterService authTwitterService;
     private AuthTwitterClient authTwitterClient;
     private MutableLiveData<ResponseUserProfile> userProfile;
+    private MutableLiveData<String> photoProfile;
 
     public ProfileRepository() {
         authTwitterClient = AuthTwitterClient.getInstance();
         authTwitterService = authTwitterClient.getAuthTwitterService();
         userProfile = getProfile();
+        if (photoProfile == null)
+            photoProfile = new MutableLiveData<>();
+    }
+
+    public MutableLiveData<String> getPhotoProfile() {
+        return photoProfile;
     }
 
     public MutableLiveData<ResponseUserProfile> getProfile() {
@@ -68,6 +79,26 @@ public class ProfileRepository {
 
             @Override
             public void onFailure(Call<ResponseUserProfile> call, Throwable t) {
+                Toast.makeText(MyApp.getContext(), "Connection error", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void uploadProfilePhoto(String path) {
+        RequestBody requestBody = RequestBody.create(MediaType.parse("image/jpg"), new File(path));
+        authTwitterService.uploadProfilePhoto(requestBody).enqueue(new Callback<ResponseUploadProfilePhoto>() {
+            @Override
+            public void onResponse(Call<ResponseUploadProfilePhoto> call, Response<ResponseUploadProfilePhoto> response) {
+                if (response.isSuccessful()) {
+                    SharedPreferencesManager.writeStringValue(Constants.PREF_PHOTO_URL, response.body().getFilename());
+                    photoProfile.setValue(response.body().getFilename());
+                }
+                else
+                    Toast.makeText(MyApp.getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<ResponseUploadProfilePhoto> call, Throwable t) {
                 Toast.makeText(MyApp.getContext(), "Connection error", Toast.LENGTH_SHORT).show();
             }
         });

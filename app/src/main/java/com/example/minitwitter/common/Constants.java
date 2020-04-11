@@ -14,6 +14,9 @@ public class Constants {
     public static final String PREF_CREATED = "PREF_CREATED";
     public static final String PREF_ACTIVE = "PREF_ACTIVE";
 
+    //startActivityForResult
+    public static final int SELECT_PHOTO_GALLERY = 1;
+
     //ARGS
     public static String TWEET_LIST_TYPE= "TWEET_LIST_TYPE";
     public static int TWEET_LIST_ALL= 0;

@@ -3,6 +3,7 @@ package com.example.minitwitter.ui.profile;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.Manifest;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,11 +19,20 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.minitwitter.R;
 import com.example.minitwitter.common.Constants;
 import com.example.minitwitter.data.ProfileViewModel;
 import com.example.minitwitter.retrofit.request.RequestUserProfile;
 import com.example.minitwitter.retrofit.response.ResponseUserProfile;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.CompositePermissionListener;
+import com.karumi.dexter.listener.single.DialogOnDeniedPermissionListener;
+import com.karumi.dexter.listener.single.PermissionListener;
 
 public class ProfileFragment extends Fragment {
 
@@ -31,6 +41,7 @@ public class ProfileFragment extends Fragment {
     private EditText etUsername, etEmail, etPassword, etWebsite, etDescription;
     private Button btnSave, btnChangePassword;
     private boolean isFirstLoad = true;
+    private PermissionListener permissionListener;
 
     public static ProfileFragment newInstance() {
         return new ProfileFragment();
@@ -39,7 +50,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+        profileViewModel = new ViewModelProvider(getActivity()).get(ProfileViewModel.class);
     }
 
     @Override
@@ -74,6 +85,8 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        ivAvatar.setOnClickListener(v -> checkPermissions());
+
 
         profileViewModel.getResponseUserProfileLiveData().observe(getActivity(), responseUserProfile -> {
             etUsername.setText(responseUserProfile.getUsername());
@@ -87,9 +100,45 @@ public class ProfileFragment extends Fragment {
             if (!responseUserProfile.getPhotoUrl().isEmpty()) {
                 Glide.with(getActivity())
                         .load(Constants.API_FILES_URL + responseUserProfile.getPhotoUrl())
+                        .dontAnimate()
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .centerCrop()
+                        .skipMemoryCache(true)
                         .into(ivAvatar);
             }
         });
+
+        profileViewModel.getPhotoProfile().observe(getActivity(), photoString -> {
+            if (!photoString.isEmpty()) {
+                Glide.with(getActivity())
+                        .load(Constants.API_FILES_URL + photoString)
+                        .dontAnimate()
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .centerCrop()
+                        .skipMemoryCache(true)
+                        .into(ivAvatar);
+            }
+        });
+
+
         return view;
+    }
+
+    private void checkPermissions() {
+        PermissionListener permissionDenied = DialogOnDeniedPermissionListener.Builder
+                .withContext(getActivity())
+                .withTitle("Permissions")
+                .withMessage("The requested permissions are necessary to select a photo")
+                .withButtonText("Accept")
+                .withIcon(R.mipmap.ic_launcher)
+                .build();
+
+        permissionListener = new CompositePermissionListener((PermissionListener) getActivity(), permissionDenied);
+
+        Dexter.
+                withActivity(getActivity())
+                .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                .withListener(permissionListener)
+                .check();
     }
 }
