@@ -18,6 +18,11 @@ import com.example.minitwitter.ui.tweets.TweetListFragment;
 import com.example.minitwitter.common.Constants;
 import com.example.minitwitter.common.SharedPreferencesManager;
 import com.example.minitwitter.ui.tweets.NewTweetDialogFragment;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.karumi.dexter.PermissionToken;
@@ -70,6 +75,11 @@ public class DashboardActivity extends AppCompatActivity implements PermissionLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
+        MobileAds.initialize(this, initializationStatus -> {
+        });
+        AdView banner = findViewById(R.id.adViewBanner);
+        banner.loadAd(new AdRequest.Builder().build());
 
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
 
